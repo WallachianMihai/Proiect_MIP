@@ -1,0 +1,45 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1>{{question.name}}</h1>
+<h5>Asked by {{question.host.username}}</h5>
+
+<p>{{question.description}}</p>
+
+<div class="comment-wrapper">
+    <h3>{{answer_count}}  {% if answer_count > 1 %}Answers{%else %}Answer{% endif %}</h3>
+    <hr>
+
+    {% for answer in answers %}
+    <div>
+        <small>@{{answer.user.username}}  {{answer.created | timesince}} ago</small>
+        <p>{{answer.body}}</p>
+        <small>
+            {% for comment in answers_comments.answer_id %}
+            <small>{{comment.body}} - {{comment.user.username}}</small>
+            {% endfor %}
+            <small>
+               <form method="POST" action="">
+                   {% csrf_token %}
+                   <input type="text" name="body" placeholder="Add a comment..." />
+                   <input type="submit" name="submit" value="Answer"/>
+               </form>
+            </small>
+        </small>
+    </div>
+    <hr>
+    {% endfor %}
+</div>
+
+{% if request.user.is_authenticated %}
+<div class="comment-form">
+    <form method="POST" action="">
+        {% csrf_token %}
+        <input type="text" name="body" placeholder="Your Answer..." />
+        <input type="submit" name="submit", value="Answer"/>
+    </form>
+</div>
+{% endif %}
+
+{% endblock content %}
