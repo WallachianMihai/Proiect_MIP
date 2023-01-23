@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from .forms import QuestionForm
+from django.template.defaulttags import register
 
 def registerUser(request):
     page = 'register'
@@ -74,15 +75,17 @@ def home(request):
     }
     return render(request, 'base/home.html', context)
 
+@register.filter
+def get_value(dictionary, key):
+    return dictionary.get(key)
+
 def question(request, pk):
     question = Question.objects.get(id=pk)
     answers = question.answer_set.all().order_by('-created')
 
     answers_comments = {}
     for answer in answers:
-        answer_comments = answer.comment_set.all().order_by('-created')
-        answers_comments[answer.id] = answer_comments
-        print(answer.id)
+        answers_comments[answer.id] = answer.comment_set.all().order_by('created')
 
     context = {
         'question': question,
@@ -92,11 +95,18 @@ def question(request, pk):
     }
 
     if request.method == 'POST':
-        answer = Answer.objects.create(
-            user = request.user,
-            question = question,
-            body = request.POST.get('body')
-        )
+        if request.POST.get('answer_body') is None:
+            comment = Comment.objects.create(
+                user = request.user,
+                answer = Answer.objects.get(id=request.POST.get('answer')),
+                body = request.POST.get('comment_body')
+            )
+        else:
+            answer = Answer.objects.create(
+                user = request.user,
+                question = question,
+                body = request.POST.get('answer_body')
+            )
         return redirect('question', pk=question.id)
 
     return render(request, 'base/question.html', context)
@@ -142,3 +152,11 @@ def delete(request, pk):
         question.delete()
         return redirect('home')
     return render(request, 'base/delete.html', {'obj': question})
+
+@login_required(login_url='login')
+def deleteComment():
+    return None
+
+@login_required(login_url='login')
+def deleteAnswer():
+    return None
