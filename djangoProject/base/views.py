@@ -14,22 +14,19 @@ from django.template.defaulttags import register
 
 def registerUser(request):
     page = 'register'
-    form = UserCreationForm()
     context = {
-        'form': form,
         'page': page
     }
 
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.username = user.username.lower()
-            user.save()
-            login(request, user)
-            return redirect('home')
-        else:
-            messages.error(request, 'An error occured during registration')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        re_password = request.POST.get('re_password')
+        if password != re_password:
+            messages.error(request, 'Passwords dont match')
+        user = User.objects.create_user(username, password=password)
+        login(request, user)
+        return redirect('home')
 
     return render(request, 'base/login_register.html', context)
 
