@@ -25,6 +25,7 @@ class Answer(models.Model):
     user = models.ForeignKey(User, on_delete = models.SET_NULL, null = True)
     question = models.ForeignKey(Question, on_delete = models.SET_NULL, null = True)
     body = models.TextField()
+    likes = models.IntegerField(default=0)
     updated = models.DateTimeField(auto_now = True)
     created = models.DateTimeField(auto_now_add = True)
 

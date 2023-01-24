@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.db.models import Q
 from .models import Question, Topic, Answer, Comment
-from django.shortcuts import HttpResponse
+from django.shortcuts import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -176,3 +176,17 @@ def deleteAnswer(request, pk):
         answer.delete()
         return redirect('home')
     return render(request, 'base/delete.html', {'obj': answer})
+
+@login_required(login_url='login')
+def likeAnswer(request, pk):
+    answer = Answer.objects.get(id=pk)
+    likes = answer.likes + 1
+    Answer.objects.filter(id=pk).update(likes=likes)
+    return redirect(request.META.get('HTTP_REFERER'))
+
+@login_required(login_url='login')
+def dislikeAnswer(request, pk):
+    answer = Answer.objects.get(id=pk)
+    likes = answer.likes - 1
+    Answer.objects.filter(id=pk).update(likes=likes)
+    return redirect(request.META.get('HTTP_REFERER'))
