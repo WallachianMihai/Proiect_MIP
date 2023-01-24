@@ -24,7 +24,7 @@
         <small>
             @{{answer.user.username}}  {{answer.created | timesince}} ago
             {% if request.user == answer.user %}
-            <a href="{% url 'delete-answer' %}">Delete</a>
+            <a href="{% url 'delete-answer' answer.id %}">Delete</a>
             {% endif %}
         </small>
         <div class="answer_container">
@@ -44,7 +44,7 @@
                          <p>
                              {{comment.body}} - {{comment.user.username}}
                              {% if request.user == comment.user %}
-                                <a href="{% url 'delete-comment' %}">Delete</a>
+                                <a href="{% url 'delete-comment' comment.id %}">Delete</a>
                              {% endif %}
                          </p>
                     {% endfor %}

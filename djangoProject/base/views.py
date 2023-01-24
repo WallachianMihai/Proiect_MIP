@@ -154,9 +154,25 @@ def delete(request, pk):
     return render(request, 'base/delete.html', {'obj': question})
 
 @login_required(login_url='login')
-def deleteComment():
-    return None
+def deleteComment(request, pk):
+    comment = Comment.objects.get(id=pk)
+
+    if request.user != comment.user:
+        return redirect('home')
+
+    if request.method == 'POST':
+        comment.delete()
+        return redirect('home')
+    return render(request, 'base/delete.html', {'obj': comment})
 
 @login_required(login_url='login')
-def deleteAnswer():
-    return None
+def deleteAnswer(request, pk):
+    answer = Answer.objects.get(id=pk)
+
+    if request.user != answer.user:
+        return redirect('home')
+
+    if request.method == 'POST':
+        answer.delete()
+        return redirect('home')
+    return render(request, 'base/delete.html', {'obj': answer})
