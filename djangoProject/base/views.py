@@ -82,7 +82,9 @@ def get_value(dictionary, key):
 def question(request, pk):
     question = Question.objects.get(id=pk)
     answers = question.answer_set.all().order_by('-created')
+    bestAnswer = Answer.objects.filter(bestAnswer=True)
 
+    print(bestAnswer)
     answers_comments = {}
     for answer in answers:
         answers_comments[answer.id] = answer.comment_set.all().order_by('created')
@@ -91,7 +93,8 @@ def question(request, pk):
         'question': question,
         'answers': answers,
         'answer_count': answers.count() if answers.count() != 0 else 0,
-        'answers_comments': answers_comments
+        'answers_comments': answers_comments,
+        'bestAnswer': 0 if bestAnswer.count() == 0 else bestAnswer[0].id
     }
 
     if request.method == 'POST':
@@ -189,4 +192,11 @@ def dislikeAnswer(request, pk):
     answer = Answer.objects.get(id=pk)
     likes = answer.likes - 1
     Answer.objects.filter(id=pk).update(likes=likes)
+    return redirect(request.META.get('HTTP_REFERER'))
+
+@login_required(login_url='login')
+def markAnswer(request, pk):
+    answer = Answer.objects.get(id=pk)
+    bestAnswer = answer.bestAnswer
+    Answer.objects.filter(id=pk).update(bestAnswer=(not bestAnswer))
     return redirect(request.META.get('HTTP_REFERER'))
