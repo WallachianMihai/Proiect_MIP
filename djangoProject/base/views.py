@@ -1,3 +1,5 @@
+import array
+
 import django.http
 from django.shortcuts import render
 from django.shortcuts import redirect
@@ -65,10 +67,12 @@ def home(request):
         Q(description__icontains=q)
     )
     topics = Topic.objects.all()
+    answers = Answer.objects.all().order_by('created')
     context = {
         'questions': questions,
         'question_count': questions.count(),
         'topics': topics,
+        'answers': answers,
     }
     return render(request, 'base/home.html', context)
 
@@ -81,7 +85,6 @@ def question(request, pk):
     answers = question.answer_set.all().order_by('-created')
     bestAnswer = Answer.objects.filter(bestAnswer=True)
 
-    print(bestAnswer)
     answers_comments = {}
     for answer in answers:
         answers_comments[answer.id] = answer.comment_set.all().order_by('created')
@@ -115,9 +118,11 @@ def question(request, pk):
 @login_required(login_url='login')
 def createQuestion(request):
     topics = Topic.objects.all()
+
     if request.method == 'POST':
         topicName = request.POST.get('topic')
         topic, created = Topic.objects.get_or_create(name=topicName)
+
         question = Question.objects.create(
             host=request.user,
             name=request.POST.get('question_name'),
@@ -125,6 +130,7 @@ def createQuestion(request):
             description=request.POST.get('description')
         )
         return redirect('home')
+
     context = {'topics': topics}
     return render(request, 'base/question_form.html', context)
 

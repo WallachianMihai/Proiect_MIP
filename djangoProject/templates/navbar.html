@@ -1,15 +1,13 @@
 
 <nav class="nav-extended teal lighten-2">
 <div class="nav-wrapper">
-  <a href="#!" class="brand-logo black-text">Queue Underflow</a>
+  <a href="/" class="brand-logo black-text">Queue Underflow</a>
+
   <ul class="right hide-on-med-and-down">
     <li>
-
-
        <form class="waves-teal black-text" method="GET" action="{% url 'home' %}">
             <input type = "text" name="q" placeholder="Search Questions..."/>
         </form>
-
     </li>
     <li>
         {% if request.user.is_authenticated %}
