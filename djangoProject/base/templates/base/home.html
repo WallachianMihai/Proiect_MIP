@@ -9,7 +9,7 @@
         <div class="row">
             <h3 class="col s12 center">Browse Topics</h3>
             <div class="col s12 center">
-                <a class=" waves-effect btn teal darken-1 z-depth-1" href="{% url 'home' %}">All</a>
+                <a style="margin-top: 0.6em" class=" waves-effect btn teal darken-1 z-depth-1" href="{% url 'home' %}">All</a>
             </div>
 
             {% for topic in topics %}
@@ -35,7 +35,7 @@
 
                 <span class="center waves-effect white-text" style="font-size: 1.1em">@{{question.host.username}}</span>
                 <h5> <small class="center waves-effect black-text">{{question.id}} --</small> <a class="center waves-effect cyan-text" href ="{% url 'question' question.id %}">{{question.name}}</a> </h5>
-                <small style="font-size: 2em">{{question.topic.name}}</small><hr>
+                <small style="font-size: 2em">{{question.topic.name}}</small>
             </div>
             {% endfor %}
         </div>
@@ -51,7 +51,6 @@
                 <div style="font-size: 1em" class="center waves-effect white-text">@{{answer.user.username}}</div>
                 <div style="font-size: 1em"><small class="center waves-effect black-text">{{answer.question.id}} --</small> <a class="center waves-effect cyan-text text" href ="{% url 'question' answer.question.id %}">{{answer.question.name}}</a> </div>
                 <small style="font-size: 0.9em">{{answer}}...</small>
-                <hr>
             </div>
             {% endfor %}
         </div>

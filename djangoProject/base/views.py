@@ -137,18 +137,26 @@ def createQuestion(request):
 @login_required(login_url='login')
 def updateQuestion(request, pk):
     question = Question.objects.get(id=pk)
-    form = QuestionForm(instance=question)
+    topic = question.topic
+    name = question.name
+    description = question.description
 
     if request.user != question.host:
         return redirect('home')
 
     if request.method == 'POST':
-        form = QuestionForm(request.POST, instance=question)
-        if form.is_valid():
-            form.save()
+        topicName = request.POST.get('topic')
+        name = request.POST.get('question_name')
+        description = request.POST.get('description')
+        topic, created = Topic.objects.get_or_create(name=topicName)
+        Question.objects.filter(id=pk).update(name=name, description=description, topic=topic)
         return redirect('home')
 
-    context = {"form": form}
+    context = {
+        'topic': topic,
+        'name': name,
+        'description': description
+    }
     return render(request, 'base/question_form.html', context)
 
 @login_required(login_url='login')

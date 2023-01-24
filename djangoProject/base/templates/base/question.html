@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class="container teal lighten-4" style="margin-top: 2em">
+<div class="container teal lighten-4" style="margin-top: 5em">
     <div class="row center section">
         <h1 class="col s12">{{question.name}}</h1>
         <h5 class="col s12">Asked by {{question.host.username}}</h5>
@@ -13,24 +13,32 @@
     </div>
 
     <div class="row section">
-        <h3 class="col s12">{{answer_count}}  {% if answer_count == 1 %} Answer {% else %} Answers {% endif %}</h3>
+         <h3 class="col s12">{{answer_count}}  {% if answer_count == 1 %} Answer {% else %} Answers {% endif %}</h3>
     </div>
-
 
     <div class="row">
         <div class="container section">
             {% for answer in answers %}
             <div class="row">
-                <h4 class="col s6">@{{answer.user.username}}  {{answer.created | timesince}} ago</h4>
-                {% if request.user == answer.user %}
-                    <a style="margin-top: 1.95em" class="col s3 btn teal" href="{% url 'delete-answer' answer.id %}">Delete</a>
+                {% if answer.id == bestAnswer %}
+                <h5 class="col s9">@{{answer.user.username}}  {{answer.created | timesince}} ago  <i style="color: forestgreen" class="medium material-icons">check</i> </h5>
+                {% else %}
+                <h5 class="col s9">@{{answer.user.username}}  {{answer.created | timesince}} ago</h5>
                 {% endif %}
-                <h5 class="col s10">☢ {{answer.body}}</h5>
+                {% if request.user == answer.user %}
+                    <a style="margin-top: 1.55em" class="col s3 btn teal" href="{% url 'delete-answer' answer.id %}"><span style="color:black">Delete</span></a>
+                {% endif %}
+                <h5 class="col s12, card teal lighten-3">☢ {{answer.body}}</h5>
                 <div class="col s12">
                    <div class="section">
                        <div class="row">
-                           <a class="col s3 waves-effect btn teal lighten-4 black-text z-depth-1" href="{% url 'like-answer' answer.id %}">Useful</a>
-                           <a style="margin-left: 1em" class="col s3 waves-effect btn teal lighten-4 black-text z-depth-1" href="{% url 'dislike-answer' answer.id %}">Useless</a>
+                            {% if request.user == question.host and bestAnswer == 0 %}
+                            <a style="margin-right: 1em" class="col s2 waves-effect btn teal lighten-4 black-text z-depth-1" href="{% url 'mark-answer' answer.id %}">mark as best</a>
+                            {% elif request.user == question.host and answer.id == bestAnswer %}
+                             <a style="margin-right: 1em" class="col s2 waves-effect btn teal lighten-4 black-text z-depth-1" href="{% url 'mark-answer' answer.id %}">unmark</a>
+                            {% endif %}
+                           <a class="col s2 waves-effect btn teal lighten-4 black-text z-depth-1" href="{% url 'like-answer' answer.id %}">Like</a>
+                           <a style="margin-left: 1em" class="col s2 waves-effect btn teal lighten-4 black-text z-depth-1" href="{% url 'dislike-answer' answer.id %}">Dislike</a>
                            <h6 style="margin-left: 1em" class="col s3">{{answer.likes}} likes.</h6>
                        </div>
                    </div>
@@ -40,12 +48,12 @@
                     {% for key in answers_comments %}
                         {% if key == answer.id %}
                             {% for comment in answers_comments|get_value:key %}
-                                 <h6>
+                                 <p>
                                      {{comment.body}} - {{comment.user.username}}
                                      {% if request.user == comment.user %}
-                                        <a  href="{% url 'delete-comment' comment.id %}">Delete</a>
+                                        <a style="margin-left: 2em" class="btn-small teal" href="{% url 'delete-comment' comment.id %}"><span style="color:black">Delete</span></a>
                                      {% endif %}
-                                 </h6>
+                                 </p>
                             {% endfor %}
                         {% endif %}
                     {% endfor %}
@@ -62,6 +70,7 @@
                      {% endif %}
                 </div>
             </div>
+            <hr>
             {% endfor %}
        </div>
     </div>
