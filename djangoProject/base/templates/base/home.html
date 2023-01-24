@@ -55,14 +55,8 @@
     <div class="row">
         <h3 class="col s12 center">Recent Answers</h3>
 
-        <div class="col s12 center">
-            <a class=" waves-effect btn teal darken-1 z-depth-1" href="{% url 'home' %}">All</a>
-        </div>
-        {% for topic in topics %}
-        <div class="col s12 center">
-            <a class="waves-effect btn teal darken-1 z-depth-1" href="{% url 'home' %}?q={{topic.name}}">{{topic.name}}</a>
-        </div>
-        {% endfor %}
+
+
     </div>
 </div>
 </div></div>
