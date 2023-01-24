@@ -2,105 +2,82 @@
 
 {% block content %}
 
-<style>
-    .question_container
-    {
-        display: grid;
-        grid-template-columns: 3fr 1fr;
-    }
-    .answer_container
-    {
-        display: grid;
-        grid-template-columns: 0.3fr 3fr
-    }
-</style>
-
-<h1>{{question.name}}</h1>
-<h5>Asked by {{question.host.username}}</h5>
-
-<p>{{question.description}}</p>
-
-<div class="question_container">
-    <h3>{{answer_count}}  {% if answer_count == 1 %} Answer {% else %} Answers {% endif %}</h3>
-    <br>
-
-    <div>
-        {% for answer in answers %}
-        <div>
-            <small>
-                @{{answer.user.username}}  {{answer.created | timesince}} ago
-                {% if request.user == answer.user %}
-                <a href="{% url 'delete-answer' answer.id %}">Delete</a>
-                {% endif %}
-            </small>
-            <div class="answer_container">
-               <div>
-                   <p>
-                       <a href="{% url 'like-answer' answer.id %}">Useful</a>
-                       <p>{{answer.likes}}</p>
-                       <a href="{% url 'dislike-answer' answer.id %}">Useless</a>
-                   </p>
-                   {% if request.user == question.host and bestAnswer == 0 %}
-                   <a href="{% url 'mark-answer' answer.id %}">Mark as best</a>
-                   {% endif %}
-
-                   {% if bestAnswer == answer.id %}
-                    <p>
-                        <b>Best Answer!</b>
-                        {% if request.user == question.host %}
-                         <a href="{% url 'mark-answer' answer.id %}">Unmark</a>
-                        {% endif %}
-                    </p>
-                    {% endif %}
-               </div>
-               <p>{{answer.body}}</p>
-            </div>
-
-             <hr style="width:15%;text-align:left;margin-left:0">
-            <div>
-                {% for key in answers_comments %}
-                    {% if key == answer.id %}
-                        {% for comment in answers_comments|get_value:key %}
-                             <p>
-                                 {{comment.body}} - {{comment.user.username}}
-                                 {% if request.user == comment.user %}
-                                    <a href="{% url 'delete-comment' comment.id %}">Delete</a>
-                                 {% endif %}
-                             </p>
-                        {% endfor %}
-                    {% endif %}
-                {% endfor %}
-
-                {% if request.user.is_authenticated %}
-                <small>
-                   <form method="POST" action="">
-                       {% csrf_token %}
-                       <input type="text" name="comment_body" placeholder="Add a comment..." />
-                       <input type="hidden" name="answer" value="{{answer.id}}"/>
-                       <input type="submit" name="submit" value="Comment"/>
-                   </form>
-                </small>
-                 {% endif %}
-            </div>
-        </div>
-        <hr>
-        {% endfor %}
-   </div>
-
-    <div>
-        related questions
+<div class="container teal lighten-4" style="margin-top: 2em">
+    <div class="row center section">
+        <h1 class="col s12">{{question.name}}</h1>
+        <h5 class="col s12">Asked by {{question.host.username}}</h5>
     </div>
 
-</div>
+    <div class="row center section teal lighten-3">
+        <h3 class="col s12">{{question.description}}</h3>
+    </div>
 
-{% if request.user.is_authenticated %}
-<div class="comment-form">
-    <form method="POST" action="">
-        {% csrf_token %}
-        <input type="text" name="answer_body" placeholder="Your Answer..." />
-        <input type="submit" name="submit" value="Answer"/>
-    </form>
-</div>
-{% endif %}
+    <div class="row section">
+        <h3 class="col s12">{{answer_count}}  {% if answer_count == 1 %} Answer {% else %} Answers {% endif %}</h3>
+    </div>
 
+
+    <div class="row">
+        <div class="container section">
+            {% for answer in answers %}
+            <div class="row">
+                <h4 class="col s6">@{{answer.user.username}}  {{answer.created | timesince}} ago</h4>
+                {% if request.user == answer.user %}
+                    <a style="margin-top: 1.95em" class="col s3 btn teal" href="{% url 'delete-answer' answer.id %}">Delete</a>
+                {% endif %}
+                <h5 class="col s10">☢ {{answer.body}}</h5>
+                <div class="col s12">
+                   <div class="section">
+                       <div class="row">
+                           <a class="col s3 waves-effect btn teal lighten-4 black-text z-depth-1" href="{% url 'like-answer' answer.id %}">Useful</a>
+                           <a style="margin-left: 1em" class="col s3 waves-effect btn teal lighten-4 black-text z-depth-1" href="{% url 'dislike-answer' answer.id %}">Useless</a>
+                           <h6 style="margin-left: 1em" class="col s3">{{answer.likes}} likes.</h6>
+                       </div>
+                   </div>
+                </div>
+
+                <div class="col s12">
+                    {% for key in answers_comments %}
+                        {% if key == answer.id %}
+                            {% for comment in answers_comments|get_value:key %}
+                                 <h6>
+                                     {{comment.body}} - {{comment.user.username}}
+                                     {% if request.user == comment.user %}
+                                        <a  href="{% url 'delete-comment' comment.id %}">Delete</a>
+                                     {% endif %}
+                                 </h6>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if request.user.is_authenticated %}
+                    <div class="row">
+                       <form method="POST" action="">
+                           {% csrf_token %}
+                           <input class="col s12 teal" type="text" name="comment_body" placeholder="Add a comment..." />
+                           <input class="col s12" type="hidden" name="answer" value="{{answer.id}}"/>
+                           <input class="col s12 waves-effect btn teal lighten-1 black-text z-depth-1" type="submit" name="submit" value="Comment"/>
+                       </form>
+                    </div>
+                     {% endif %}
+                </div>
+            </div>
+
+            {% endfor %}
+       </div>
+
+    </div>
+
+
+    {% if request.user.is_authenticated %}
+    <div class="row comment-form">
+        <form method="POST" action="">
+            {% csrf_token %}
+            <input class="col s12 teal" type="text" name="answer_body" placeholder="Your Answer..." />
+            <input class="col s12 waves-effect btn teal lighten-4 black-text z-depth-3" type="submit" name="submit" value="Answer"/>
+        </form>
+    </div>
+    {% endif %}
+
+</div>
 {% endblock content %}
