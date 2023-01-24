@@ -117,14 +117,18 @@ def question(request, pk):
 
 @login_required(login_url='login')
 def createQuestion(request):
-    form = QuestionForm()
-
+    topics = Topic.objects.all()
     if request.method == 'POST':
-        form = QuestionForm(request.POST)
-        if form.is_valid():
-            form.save()
+        topicName = request.POST.get('topic')
+        topic, created = Topic.objects.get_or_create(name=topicName)
+        question = Question.objects.create(
+            host=request.user,
+            name=request.POST.get('question_name'),
+            topic=topic,
+            description=request.POST.get('description')
+        )
         return redirect('home')
-    context = {'form': form}
+    context = {'topics': topics}
     return render(request, 'base/question_form.html', context)
 
 @login_required(login_url='login')
