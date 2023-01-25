@@ -1,0 +1,106 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<style>
+    .question_container
+    {
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+    }
+    .answer_container
+    {
+        display: grid;
+        grid-template-columns: 0.3fr 3fr
+    }
+</style>
+
+<h1>{{question.name}}</h1>
+<h5>Asked by {{question.host.username}}</h5>
+
+<p>{{question.description}}</p>
+
+<div class="question_container">
+    <h3>{{answer_count}}  {% if answer_count == 1 %} Answer {% else %} Answers {% endif %}</h3>
+    <br>
+
+    <div>
+        {% for answer in answers %}
+        <div>
+            <small>
+                @{{answer.user.username}}  {{answer.created | timesince}} ago
+                {% if request.user == answer.user %}
+                <a href="{% url 'delete-answer' answer.id %}">Delete</a>
+                {% endif %}
+            </small>
+            <div class="answer_container">
+               <div>
+                   <p>
+                       <a href="{% url 'like-answer' answer.id %}">Useful</a>
+                       <p>{{answer.likes}}</p>
+                       <a href="{% url 'dislike-answer' answer.id %}">Useless</a>
+                   </p>
+                   {% if request.user == question.host and bestAnswer == 0 %}
+                   <a href="{% url 'mark-answer' answer.id %}">Mark as best</a>
+                   {% endif %}
+
+                   {% if bestAnswer == answer.id %}
+                    <p>
+                        <b>Best Answer!</b>
+                        {% if request.user == question.host %}
+                         <a href="{% url 'mark-answer' answer.id %}">Unmark</a>
+                        {% endif %}
+                    </p>
+                    {% endif %}
+               </div>
+               <p>{{answer.body}}</p>
+            </div>
+
+             <hr style="width:15%;text-align:left;margin-left:0">
+            <div>
+                {% for key in answers_comments %}
+                    {% if key == answer.id %}
+                        {% for comment in answers_comments|get_value:key %}
+                             <p>
+                                 {{comment.body}} - {{comment.user.username}}
+                                 {% if request.user == comment.user %}
+                                    <a href="{% url 'delete-comment' comment.id %}">Delete</a>
+                                 {% endif %}
+                             </p>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+
+                {% if request.user.is_authenticated %}
+                <small>
+                   <form method="POST" action="">
+                       {% csrf_token %}
+                       <input type="text" name="comment_body" placeholder="Add a comment..." />
+                       <input type="hidden" name="answer" value="{{answer.id}}"/>
+                       <input type="submit" name="submit" value="Comment"/>
+                   </form>
+                </small>
+                 {% endif %}
+            </div>
+        </div>
+        <hr>
+        {% endfor %}
+   </div>
+
+    <div>
+        related questions
+    </div>
+
+</div>
+
+{% if request.user.is_authenticated %}
+<div class="comment-form">
+    <form method="POST" action="">
+        {% csrf_token %}
+        <input type="text" name="answer_body" placeholder="Your Answer..." />
+        <input type="submit" name="submit" value="Answer"/>
+    </form>
+</div>
+{% endif %}
+
+{% endblock content %}
