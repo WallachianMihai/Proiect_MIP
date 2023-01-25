@@ -1,11 +1,9 @@
 {% extends 'main.html' %}
 
-
 {% block content %}
 
 <div class="row">
     <div class="container col s3">
-
         <div class="row">
             <h3 class="col s12 center">Browse Topics</h3>
             <div class="col s12 center">
@@ -16,7 +14,6 @@
             <div class="col s12 center">
                 <a style="margin: 1em" class="waves-effect btn indigo darken-1 z-depth-1" href="{% url 'home' %}?q={{topic.name}}">{{topic.name}}</a>
             </div>
-
             {% endfor %}
         </div>
     </div>
@@ -34,7 +31,7 @@
                 {% endif %}
 
                 <span class="center waves-effect white-text" style="font-size: 1.1em">@{{question.host.username}}</span>
-                <h5> <small class="center waves-effect black-text">{{question.id}} --</small> <a class="center waves-effect cyan-text" href ="{% url 'question' question.id %}">{{question.name}}</a> </h5>
+                <h5> <b class="center waves-effect black-text">{{question.id}} --</b> <a class="center waves-effect cyan-text" href ="{% url 'question' question.id %}">{{question.name}}</a> </h5>
                 <small style="font-size: 2em">{{question.topic.name}}</small>
             </div>
             {% endfor %}
@@ -42,18 +39,7 @@
     </div>
 
     <div class="container col s3">
-        <div class="row">
-            <h3 class="col s12 center">Recent Answers</h3>
-
-            {% for answer in answers %}
-            <div class="container col s2 center"></div>
-            <div class="col s9 center  indigo accent-1, card panel  indigo accent-1 z-depth-3">
-                <div style="font-size: 1em" class="center waves-effect white-text">@{{answer.user.username}}</div>
-                <div style="font-size: 1em"><small class="center waves-effect black-text">{{answer.question.id}} --</small> <a class="center waves-effect cyan-text text" href ="{% url 'question' answer.question.id %}">{{answer.question.name}}</a> </div>
-                <small style="font-size: 0.9em">{{answer}}...</small>
-            </div>
-            {% endfor %}
-        </div>
+        {% include 'base/recent_answers_component.html' %}
     </div>
 </div>
 

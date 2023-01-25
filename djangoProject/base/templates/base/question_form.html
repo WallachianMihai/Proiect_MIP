@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    {% if request.path == 'create-question' %}
+    {% if request.path == '/create-question/' %}
     <div class="container" style="margin-top: 2em; padding-bottom: 2em">
         <form method="POST" action="">
             {% csrf_token %}

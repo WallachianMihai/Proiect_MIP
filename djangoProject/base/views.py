@@ -67,7 +67,7 @@ def home(request):
         Q(description__icontains=q)
     )
     topics = Topic.objects.all()
-    answers = Answer.objects.all().order_by('created')
+    answers = Answer.objects.all().order_by('-created')
     context = {
         'questions': questions,
         'question_count': questions.count(),
@@ -83,7 +83,7 @@ def get_value(dictionary, key):
 def question(request, pk):
     question = Question.objects.get(id=pk)
     answers = question.answer_set.all().order_by('-created')
-    bestAnswer = Answer.objects.filter(bestAnswer=True)
+    bestAnswer = Answer.objects.filter(bestAnswer=True, question=question)
 
     answers_comments = {}
     for answer in answers:
@@ -118,6 +118,7 @@ def question(request, pk):
 @login_required(login_url='login')
 def createQuestion(request):
     topics = Topic.objects.all()
+    print(request.path)
 
     if request.method == 'POST':
         topicName = request.POST.get('topic')
