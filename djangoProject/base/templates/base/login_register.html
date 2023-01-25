@@ -8,7 +8,7 @@
         {% csrf_token %}
 
         <div class="container">
-            <div class="row center teal lighten-2" style="margin-top: 2em">
+            <div class="row center indigo lighten-2" style="margin-top: 2em">
                 <div>
                     <h3 class="col s12 center">Login</h3>
                     <div class="col s12">
@@ -18,10 +18,10 @@
                         <input type="password" name="password" placeholder="Enter Password" />
                     </div>
 
-                    <input class=" waves-effect btn teal lighten-5 black-text z-depth-1" type="submit" value="Login"/>
+                    <input class=" waves-effect btn indigo lighten-5 black-text z-depth-1" type="submit" value="Login"/>
 
                     <p>Haven't signed up yet?</p>
-                    <a class=" waves-effect btn teal lighten-5 black-text z-depth-1" style="margin-bottom: 1em" href="{% url 'register' %}">Sign up</a>
+                    <a class=" waves-effect btn indigo lighten-5 black-text z-depth-1" style="margin-bottom: 1em" href="{% url 'register' %}">Sign up</a>
                 </div>
             </div>
         </div>
@@ -33,7 +33,7 @@
         {% csrf_token %}
 
         <div class="container">
-            <div class="row center teal lighten-2" style="margin-top: 2em">
+            <div class="row center indigo lighten-2" style="margin-top: 2em">
                 <div>
                     <h3 class="col s12 center">Register</h3>
                     <div class="col s12">
@@ -46,10 +46,10 @@
                         <input type="password" name="re_password" placeholder="Enter again Password" />
                     </div>
 
-                    <input class=" waves-effect btn teal lighten-5 black-text z-depth-1" type="submit" value="Register"/>
+                    <input class=" waves-effect btn indigo lighten-5 black-text z-depth-1" type="submit" value="Register"/>
 
                     <p>Already have an account?</p>
-                    <a class=" waves-effect btn teal lighten-5 black-text z-depth-1" style="margin-bottom: 1em" href="{% url 'login' %}">Login</a>
+                    <a class=" waves-effect btn indigo lighten-5 black-text z-depth-1" style="margin-bottom: 1em" href="{% url 'login' %}">Login</a>
                 </div>
             </div>
         </div>

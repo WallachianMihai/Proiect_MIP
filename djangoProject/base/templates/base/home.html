@@ -9,12 +9,12 @@
         <div class="row">
             <h3 class="col s12 center">Browse Topics</h3>
             <div class="col s12 center">
-                <a style="margin-top: 0.6em" class=" waves-effect btn teal darken-1 z-depth-1" href="{% url 'home' %}">All</a>
+                <a style="margin-top: 0.6em" class=" waves-effect btn indigo darken-1 z-depth-1" href="{% url 'home' %}">All</a>
             </div>
 
             {% for topic in topics %}
             <div class="col s12 center">
-                <a style="margin: 1em" class="waves-effect btn teal darken-1 z-depth-1" href="{% url 'home' %}?q={{topic.name}}">{{topic.name}}</a>
+                <a style="margin: 1em" class="waves-effect btn indigo darken-1 z-depth-1" href="{% url 'home' %}?q={{topic.name}}">{{topic.name}}</a>
             </div>
 
             {% endfor %}
@@ -23,11 +23,11 @@
         <div class="container col s6">
             <div class="row">
                 <h6 class="col s12 center">{{question_count}} Questions</h6>
-                <a class="col s12 center waves-effect btn teal darken-1 z-depth-1" href="{% url 'create-question' %}">Ask Question</a>
+                <a class="col s12 center waves-effect btn indigo darken-1 z-depth-1" href="{% url 'create-question' %}">Ask Question</a>
             </div>
             <div class="row ">
             {% for question in questions %}
-            <div class="col s12 center teal lighten-4, card-panel teal">
+            <div class="col s12 center indigo lighten-2, card-panel indigo lighten-2 z-depth-3">
                 {% if request.user.id == question.host.id %}
                 <a class="center waves-effect cyan-text text" href="{% url 'update-question' question.id %}">Edit</a>
                 <a class="center waves-effect cyan-text text" href="{% url 'delete-question' question.id %}">Delete</a>
@@ -47,7 +47,7 @@
 
             {% for answer in answers %}
             <div class="container col s2 center"></div>
-            <div class="col s9 center teal, card panel teal lighten">
+            <div class="col s9 center  indigo accent-1, card panel  indigo accent-1 z-depth-3">
                 <div style="font-size: 1em" class="center waves-effect white-text">@{{answer.user.username}}</div>
                 <div style="font-size: 1em"><small class="center waves-effect black-text">{{answer.question.id}} --</small> <a class="center waves-effect cyan-text text" href ="{% url 'question' answer.question.id %}">{{answer.question.name}}</a> </div>
                 <small style="font-size: 0.9em">{{answer}}...</small>
