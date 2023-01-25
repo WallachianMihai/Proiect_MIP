@@ -1,19 +1,26 @@
-<a href="/">
-    <h1>LOGO</h1>
-</a>
 
-<form method="GET" action="{% url 'home' %}">
-    <input type = "text" name="q" placeholder="Search Questions..."/>
-</form>
+<nav class="nav-extended indigo lighten-2">
+<div class="nav-wrapper">
+  <a href="/" class="brand-logo black-text">Queue Underflow</a>
 
-{% if request.user.is_authenticated %}
-<p>Hello {{request.user.username}}!</p>
-{% endif %}
-
-{% if request.user.is_authenticated %}
-    <a href="{% url 'logout' %}">Logout</a>
-{% else %}
-    <a href="{% url 'login' %}">Login</a>
-{% endif %}
-
-<hr>
+  <ul class="right hide-on-med-and-down">
+    <li>
+       <form class="waves-indigo black-text" method="GET" action="{% url 'home' %}">
+            <input type = "text" name="q" placeholder="Search Questions..."/>
+        </form>
+    </li>
+    <li>
+        {% if request.user.is_authenticated %}
+            <a hred="#" class="button waves-light-indigo waves-effect black-text">Hello {{request.user.username}}!</a>
+        {% endif %}
+    </li>
+    <li>
+        {% if request.user.is_authenticated %}
+            <a class="button waves-light-indigo waves-effect black-text" href="{% url 'logout' %}">Logout</a>
+        {% else %}
+            <a class="button waves-light-indigo waves-effect black-text" href="{% url 'login' %}">Login</a>
+        {% endif %}
+    </li>
+  </ul>
+</div>
+</nav>

@@ -1,0 +1,12 @@
+<div class="row">
+    <h3 class="col s12 center">Recent Answers</h3>
+
+    {% for answer in answers %}
+    <div class="container col s2 center"></div>
+    <div class="col s9 center  indigo, card panel  indigo z-depth-3">
+        <div style="font-size: 1em" class="center waves-effect white-text">@{{answer.user.username}}</div>
+        <div style="font-size: 1em"><small class="center waves-effect black-text">{{answer.question.id}} --</small> <a class="center waves-effect cyan-text text" href ="{% url 'question' answer.question.id %}">{{answer.question.name}}</a> </div>
+        <small style="font-size: 0.9em">{{answer}}...</small>
+    </div>
+    {% endfor %}
+</div>

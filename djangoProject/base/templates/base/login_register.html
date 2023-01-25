@@ -7,28 +7,55 @@
     <form method="POST" action="">
         {% csrf_token %}
 
-        <label>Username:</label>
-        <input type="text" name="username" placeholder="Enter Username" />
+        <div class="container">
+            <div class="row center indigo lighten-2" style="margin-top: 2em">
+                <div>
+                    <h3 class="col s12 center">Login</h3>
+                    <div class="col s12">
+                        <input type="text" name="username" placeholder="Enter Username" />
+                    </div>
+                    <div class="col s12">
+                        <input type="password" name="password" placeholder="Enter Password" />
+                    </div>
 
-        <label>Password:</label>
-        <input type="text" name="password" placeholder="Enter Password" />
+                    <input class=" waves-effect btn indigo lighten-5 black-text z-depth-1" type="submit" value="Login"/>
 
-        <input type="submit" value="Login"/>
-
-        <p>Haven't signed up yet?</p>
-        <a href="{% url 'register' %}">Sign up</a>
+                    <p>Haven't signed up yet?</p>
+                    <a class=" waves-effect btn indigo lighten-5 black-text z-depth-1" style="margin-bottom: 1em" href="{% url 'register' %}">Sign up</a>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
 {% else %}
 <div>
     <form method="POST" action="">
         {% csrf_token %}
-        {{form.as_p}}
-        <input type="submit" value="Register"/>
+
+        <div class="container">
+            <div class="row center indigo lighten-2" style="margin-top: 2em">
+                <div>
+                    <h3 class="col s12 center">Register</h3>
+                    <div class="col s12">
+                        <input type="text" name="username" placeholder="Enter Username" />
+                    </div>
+                    <div class="col s12">
+                        <input type="password" name="password" placeholder="Enter Password" />
+                    </div>
+                    <div class="col s12">
+                        <input type="password" name="re_password" placeholder="Enter again Password" />
+                    </div>
+
+                    <input class=" waves-effect btn indigo lighten-5 black-text z-depth-1" type="submit" value="Register"/>
+
+                    <p>Already have an account?</p>
+                    <a class=" waves-effect btn indigo lighten-5 black-text z-depth-1" style="margin-bottom: 1em" href="{% url 'login' %}">Login</a>
+                </div>
+            </div>
+        </div>
+
     </form>
 
-    <p>Already signed up?</p>
-    <a href="{% url 'login' %}">Login</a>
 </div>
 {% endif %}
 

@@ -1,11 +1,58 @@
 {% extends 'main.html' %}
 
 {% block content %}
-    <div>
+
+    {% if request.path == '/create-question/' %}
+    <div class="container" style="margin-top: 2em; padding-bottom: 2em">
         <form method="POST" action="">
             {% csrf_token %}
-            {{form.as_p}}
-            <input type="submit" value="Submit" />
+            <div class="row indigo lighten-2">
+                <h3 class="col s12 center">Place your Question!</h3>
+                <div class="col s12 center">
+                     <input placeholder="Topic" required type="text" name="topic" list="topic-list"/>
+                     <datalist id="topic-list">
+                         <select id="question_topic">
+                             {% for topic in topics %}
+                                 <option value="{{ topic.name }}">{{topic.name}}</option>
+                             {% endfor %}
+                         </select>
+                     </datalist>
+                </div>
+                <div class="input-field col s12 indigo lighten-2">
+                  <input placeholder="Your question" name="question_name" type="text" class="validate">
+                </div>
+                <div class="input-field col s12 indigo lighten-2">
+                  <input placeholder="Your Description" name="description" type="text" class="validate">
+                </div>
+                <div class="col s12 center" style="margin-bottom: 2em">
+                    <input class="center waves-effect btn indigo lighten-5 z-depth-1" type="submit" value="Submit" />
+                </div>
+            </div>
         </form>
     </div>
+    {% else %}
+   <div class="container" style="margin-top: 2em; padding-bottom: 2em">
+        <form method="POST" action="">
+            {% csrf_token %}
+            <div class="row indigo lighten-2">
+                <h3 class="col s12 center">Place your Question!</h3>
+                <div class="col s12 center">
+                     <input placeholder="Topic" required type="text" name="topic" value="{{topic}}" list="topic-list"/>
+                </div>
+                <div class="input-field col s12 indigo lighten-2">
+                  <input placeholder="Your question" name="question_name" type="text" value="{{name}}" class="validate">
+                </div>
+                <div class="input-field col s12 indigo lighten-2">
+                  <input placeholder="Your Description" name="description" type="text" value="{{description}}" class="validate">
+                </div>
+                <div class="col s12 center" style="margin-bottom: 2em">
+                    <input class="center waves-effect btn indigo lighten-2 z-depth-1" type="submit" value="Submit" />
+                    <input class="center waves-effect btn indigo lighten-2 z-depth-1" type="submit" value="Submit" />
+                </div>
+                <input type="hidden" value=""/>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
 {% endblock content %}}

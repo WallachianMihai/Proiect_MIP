@@ -1,52 +1,46 @@
 {% extends 'main.html' %}
 
-
 {% block content %}
 
-<style>
-    .home-container
-    {
-        display: grid;
-        grid-template-columns: 1fr 3fr 1fr;
-    }
-</style>
+<div class="row">
+    <div class="container col s3">
+        <div class="row">
+            <h3 class="col s12 center">Browse Topics</h3>
+            <div class="col s12 center">
+                <a style="margin-top: 0.6em" class=" waves-effect btn indigo darken-1 z-depth-1" href="{% url 'home' %}">All</a>
+            </div>
 
-<div class="home-container">
-
-    <div>
-        <h3>Browse Topics</h3>
-        <hr>
-
-        <div>
-            <a href="{% url 'home' %}">All</a>
+            {% for topic in topics %}
+            <div class="col s12 center">
+                <a style="margin: 1em" class="waves-effect btn indigo darken-1 z-depth-1" href="{% url 'home' %}?q={{topic.name}}">{{topic.name}}</a>
+            </div>
+            {% endfor %}
         </div>
+    </div>
+        <div class="container col s6">
+            <div class="row">
+                <h6 class="col s12 center">{{question_count}} Questions</h6>
+                <a class="col s12 center waves-effect btn indigo darken-1 z-depth-1" href="{% url 'create-question' %}">Ask Question</a>
+            </div>
+            <div class="row ">
+            {% for question in questions %}
+            <div class="col s12 center indigo lighten-2, card-panel indigo lighten-2 z-depth-3">
+                {% if request.user.id == question.host.id %}
+                <a class="center waves-effect cyan-text text" href="{% url 'update-question' question.id %}">Edit</a>
+                <a class="center waves-effect cyan-text text" href="{% url 'delete-question' question.id %}">Delete</a>
+                {% endif %}
 
-        {% for topic in topics %}
-        <div>
-            <a href="{% url 'home' %}?q={{topic.name}}">{{topic.name}}</a>
+                <span class="center waves-effect white-text" style="font-size: 1.1em">@{{question.host.username}}</span>
+                <h5> <b class="center waves-effect black-text">{{question.id}} --</b> <a class="center waves-effect cyan-text" href ="{% url 'question' question.id %}">{{question.name}}</a> </h5>
+                <small style="font-size: 2em">{{question.topic.name}}</small>
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
 
-    <div>
-        <h5>{{question_count}} questions</h5>
-        <a href="{% url 'create-question' %}">Ask Question</a>
-
-        {% for question in questions %}
-        <div>
-            {% if request.user.id == question.host.id %}
-            <a href="{% url 'update-question' question.id %}">Edit</a>
-            <a href="{% url 'delete-question' question.id %}">Delete</a>
-            {% endif %}
-
-            <span>@{{question.host.username}}</span>
-            <h5>{{question.id}} -- <a href ="{% url 'question' question.id %}">{{question.name}}</a> </h5>
-            <small>{{question.topic.name}}</small>
-        </div>
-        <hr>
-        {% endfor %}
+    <div class="container col s3">
+        {% include 'base/recent_answers_component.html' %}
     </div>
-
 </div>
 
 {% endblock content %}

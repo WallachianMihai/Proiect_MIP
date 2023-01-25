@@ -1,3 +1,5 @@
+import array
+
 import django.http
 from django.shortcuts import render
 from django.shortcuts import redirect
@@ -14,22 +16,19 @@ from django.template.defaulttags import register
 
 def registerUser(request):
     page = 'register'
-    form = UserCreationForm()
     context = {
-        'form': form,
         'page': page
     }
 
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.username = user.username.lower()
-            user.save()
-            login(request, user)
-            return redirect('home')
-        else:
-            messages.error(request, 'An error occured during registration')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        re_password = request.POST.get('re_password')
+        if password != re_password:
+            messages.error(request, 'Passwords dont match')
+        user = User.objects.create_user(username, password=password)
+        login(request, user)
+        return redirect('home')
 
     return render(request, 'base/login_register.html', context)
 
@@ -68,10 +67,12 @@ def home(request):
         Q(description__icontains=q)
     )
     topics = Topic.objects.all()
+    answers = Answer.objects.all().order_by('-created')
     context = {
         'questions': questions,
         'question_count': questions.count(),
         'topics': topics,
+        'answers': answers,
     }
     return render(request, 'base/home.html', context)
 
@@ -82,9 +83,8 @@ def get_value(dictionary, key):
 def question(request, pk):
     question = Question.objects.get(id=pk)
     answers = question.answer_set.all().order_by('-created')
-    bestAnswer = Answer.objects.filter(bestAnswer=True)
+    bestAnswer = Answer.objects.filter(bestAnswer=True, question=question)
 
-    print(bestAnswer)
     answers_comments = {}
     for answer in answers:
         answers_comments[answer.id] = answer.comment_set.all().order_by('created')
@@ -117,31 +117,47 @@ def question(request, pk):
 
 @login_required(login_url='login')
 def createQuestion(request):
-    form = QuestionForm()
+    topics = Topic.objects.all()
+    print(request.path)
 
     if request.method == 'POST':
-        form = QuestionForm(request.POST)
-        if form.is_valid():
-            form.save()
+        topicName = request.POST.get('topic')
+        topic, created = Topic.objects.get_or_create(name=topicName)
+
+        question = Question.objects.create(
+            host=request.user,
+            name=request.POST.get('question_name'),
+            topic=topic,
+            description=request.POST.get('description')
+        )
         return redirect('home')
-    context = {'form': form}
+
+    context = {'topics': topics}
     return render(request, 'base/question_form.html', context)
 
 @login_required(login_url='login')
 def updateQuestion(request, pk):
     question = Question.objects.get(id=pk)
-    form = QuestionForm(instance=question)
+    topic = question.topic
+    name = question.name
+    description = question.description
 
     if request.user != question.host:
         return redirect('home')
 
     if request.method == 'POST':
-        form = QuestionForm(request.POST, instance=question)
-        if form.is_valid():
-            form.save()
+        topicName = request.POST.get('topic')
+        name = request.POST.get('question_name')
+        description = request.POST.get('description')
+        topic, created = Topic.objects.get_or_create(name=topicName)
+        Question.objects.filter(id=pk).update(name=name, description=description, topic=topic)
         return redirect('home')
 
-    context = {"form": form}
+    context = {
+        'topic': topic,
+        'name': name,
+        'description': description
+    }
     return render(request, 'base/question_form.html', context)
 
 @login_required(login_url='login')
